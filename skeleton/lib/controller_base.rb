@@ -2,12 +2,16 @@ require 'active_support'
 require 'active_support/core_ext'
 require 'erb'
 require_relative './session'
+require 'byebug'
 
 class ControllerBase
   attr_reader :req, :res, :params
 
   # Setup the controller
   def initialize(req, res)
+    @req = req
+    @res = res
+    # @params = params
   end
 
   # Helper method to alias @already_built_response
@@ -22,6 +26,12 @@ class ControllerBase
   # Set the response's content type to the given type.
   # Raise an error if the developer tries to double render.
   def render_content(content, content_type)
+    @already_built_response = content
+    @res['Content-Type'] = content_type
+    @res.write(content)
+    p @res.content_length
+    # @res.write(['hello',1,2])
+
   end
 
   # use ERB and binding to evaluate templates
